@@ -1,0 +1,129 @@
+import java.util*;
+class Book {
+    String title;
+    boolean isIssued;
+    Book(String title) {
+        this.title = title;
+        this.isIssued = false;
+    }
+}
+class User {
+    String name;
+    Book issuedBook;
+    User(String name) {
+        this.name = name;
+        this.issuedBook = null;
+    }
+}
+public class LibrarySystem {
+    static Book[] books = {
+            new Book("DBMS"),
+            new Book("C Programming"),
+            new Book("Java"),
+            new Book("Python"),
+    };
+    static User[] users = {
+            new User("Gokul"),
+            new User("Tharun"),
+            new User("ArunKumar"),
+            new User("Dharani dharan")
+    };
+    static void showBooks() {
+        System.out.println("\nBooks:");
+        for (Book book : books) {
+            System.out.println("- " + book.title + (book.isIssued ? " [Taken]" : " [Available]"));
+        }
+    }
+    static void showUsers() {
+        System.out.println("\nUsers:");
+        for (User user : users) {
+            if (user.issuedBook != null) {
+                System.out.println("- " + user.name + " [Issued: " + user.issuedBook.title + "]");
+            } else {
+                System.out.println("- " + user.name + " [No Book]");
+            }
+        }
+    }
+    static void issueBook(String userName, String bookTitle) {
+        User user = findUser(userName);
+        Book book = findBook(bookTitle);
+        if (user == null || book == null) {
+            System.out.println("User or Book not found.");
+            return;
+        }
+        if (user.issuedBook != null) {
+            System.out.println(user.name + " already has a book issued.");
+            return;
+        }
+        if (book.isIssued) {
+            System.out.println("Book is already issued.");
+            return;
+        }
+        book.isIssued = true;
+        user.issuedBook = book;
+        System.out.println("Book issued to " + user.name);
+    }
+    static void returnBook(String userName) {
+        User user = findUser(userName);
+        if (user == null || user.issuedBook == null) {
+            System.out.println("No book to return for this user.");
+            return;
+        }
+        user.issuedBook.isIssued = false;
+        System.out.println("Book '" + user.issuedBook.title + "' returned by " + user.name);
+        user.issuedBook = null;
+    }
+    static User findUser(String name) {
+        for (User u : users) {
+            if (u.name.equalsIgnoreCase(name))
+                return u;
+        }
+        return null;
+    }
+    static Book findBook(String title) {
+        for (Book b : books) {
+            if (b.title.equalsIgnoreCase(title))
+                return b;
+        }
+        return null;
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int choice;
+        do {
+            System.out.println("1. Show Books");
+            System.out.println("2. Show Users");
+            System.out.println("3. Issue Book");
+            System.out.println("4. Return Book");
+            System.out.println("5. Exit");
+            System.out.print("Enter choice: ");
+            choice = sc.nextInt();
+            sc.nextLine();
+            switch (choice) {
+                case 1:
+                    showBooks();
+                    break;
+                case 2:
+                    showUsers();
+                    break;
+                case 3:
+                    System.out.println("Enter user name: ");
+                    String userName = sc.nextLine();
+                    System.out.print("Enter book title: ");
+                    String bookTitle = sc.nextLine();
+                    issueBook(userName, bookTitle);
+                    break;
+                case 4:
+                    System.out.print("Enter user name: ");
+                    String returnUser = sc.nextLine();
+                    returnBook(returnUser);
+                    break;
+                case 5:
+                    System.out.println("Exiting!");
+                    break;
+                default:
+                    System.out.println("Invalid option.");
+            }
+        } while (choice != 5);
+        }
+}
